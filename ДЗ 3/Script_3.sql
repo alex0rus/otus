@@ -33,3 +33,26 @@ FROM        Application.People  p
 LEFT JOIN   s                       ON s.SalespersonPersonID = p.PersonID
 WHERE   p.IsSalesperson = 1
 AND     s.SalespersonPersonID is null;
+
+/*
+    Выберите товары с минимальной ценой (подзапросом). Сделайте два варианта подзапроса. Вывести: ИД товара, наименование товара, цена.
+*/
+SELECT      s.StockItemID
+,           s.StockItemName
+,           s.UnitPrice
+FROM        Warehouse.StockItems    s
+JOIN        (
+            SELECT  Price = MIN(UnitPrice)
+            FROM    Warehouse.StockItems
+            )                       p       ON  p.Price = s.UnitPrice;
+
+WITH p as (
+    SELECT  Price = MIN(UnitPrice)
+    FROM    Warehouse.StockItems
+)
+SELECT      s.StockItemID
+,           s.StockItemName
+,           s.UnitPrice            
+FROM        Warehouse.StockItems    s
+JOIN        p                               ON p.Price = s.UnitPrice;
+
