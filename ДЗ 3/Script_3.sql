@@ -56,3 +56,28 @@ SELECT      s.StockItemID
 FROM        Warehouse.StockItems    s
 JOIN        p                               ON p.Price = s.UnitPrice;
 
+/* 
+    Выберите информацию по клиентам, которые перевели компании пять максимальных платежей из Sales.CustomerTransactions. Представьте несколько способов (в том числе с CTE). 
+*/
+
+WITH tbl AS (
+    SELECT      TOP 5 MaxAmount = TransactionAmount
+    FROM        Sales.CustomerTransactions
+    ORDER BY TransactionAmount DESC
+)
+SELECT      DISTINCT c.CustomerName
+FROM        tbl 
+JOIN        Sales.CustomerTransactions ct   ON  ct.TransactionAmount = tbl.MaxAmount
+JOIN        Sales.Customers             c   ON  c.CustomerID         = ct.CustomerID
+ORDER BY 1;
+
+SELECT      DISTINCT c.CustomerName
+FROM        
+            (
+            SELECT      TOP 5 MaxAmount = TransactionAmount
+            FROM        Sales.CustomerTransactions
+            ORDER BY TransactionAmount DESC                
+            ) AS tbl
+JOIN        Sales.CustomerTransactions ct   ON  ct.TransactionAmount = tbl.MaxAmount
+JOIN        Sales.Customers             c   ON  c.CustomerID         = ct.CustomerID
+ORDER BY 1;
